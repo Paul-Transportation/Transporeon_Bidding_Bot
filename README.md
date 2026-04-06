@@ -27,7 +27,7 @@ python main.py
 
 ## Project Structure
 
-```
+```text
 main.py                  # Entry point: login loop + bot restart loop
 login.py                 # Selenium login to Transporeon
 _bot.py                  # Main bot loop: refresh → scrape → evaluate → bid
