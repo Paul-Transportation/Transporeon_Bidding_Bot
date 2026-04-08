@@ -1,4 +1,11 @@
-﻿# [1.0.0](https://github.com/Paul-Transportation/Transporeon_Bidding_Bot/releases/tag/v1.0.0) (2024-01-01)
+# [1.1.0](https://github.com/Paul-Transportation/Transporeon_Bidding_Bot/compare/v1.0.0...v1.1.0) (2026-04-08)
+
+### Bug Fixes
+
+* prevent bid submission crash when placeOffer dialog fails to open ([8ac6590](https://github.com/Paul-Transportation/Transporeon_Bidding_Bot/commit/8ac6590b39b798bcaf350f4f678b1202678b3e5e))
+* increase modal render wait time from 1s to 2s to allow dialog to fully load ([8ac6590](https://github.com/Paul-Transportation/Transporeon_Bidding_Bot/commit/8ac6590b39b798bcaf350f4f678b1202678b3e5e))
+
+# [1.0.0](https://github.com/Paul-Transportation/Transporeon_Bidding_Bot/releases/tag/v1.0.0) (2024-01-01)
 
 ## Features
 
