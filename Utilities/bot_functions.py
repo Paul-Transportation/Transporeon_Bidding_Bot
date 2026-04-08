@@ -454,11 +454,12 @@ def bid_load(driver, load, rown, amount):
         save_screenshot(driver, 'could_not_click_bid_button')
         send_error_email(['it-dev@paulinc.com'], "Transporeon", error_message)
         print("Could not click bid button")
-    time.sleep(1)
+        return False
+    time.sleep(2)
     try:
-        web_driver_wait_by_xpath(driver, 5, "//*[@id='amount-preDecimals-input']").send_keys(amount)
+        web_driver_wait_by_xpath(driver, 10, "//*[@id='amount-preDecimals-input']").send_keys(amount)
         # Submit rate
-        web_driver_wait_by_xpath(driver, 5, "//*[@id='PlaceOfferDialogPlaceButton']/div/div").click()
+        web_driver_wait_by_xpath(driver, 10, "//*[@id='PlaceOfferDialogPlaceButton']/div/div").click()
     except Exception as e:
         error_message = traceback.format_exc()
         print(error_message)
