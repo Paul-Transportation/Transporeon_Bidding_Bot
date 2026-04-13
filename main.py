@@ -68,11 +68,11 @@ if __name__ == "__main__":
         print("Available log types:", driver.log_types)
         try:
             print("logging in")
-            login(driver, user, password, website)
+            login(driver, user, password, website, totp_secret=storage.config.get("totp_secret", ""))
             login_counter = 0
         except Exception as e:
                 login_counter += 1
-                logger.error(f"The following error occured when trying to login: {e}", exc_info=True)
+                logger.error(f"The following error occurred when trying to login: {e}", exc_info=True)
                 print("Failed logging in. Trying again.\nCurrent login count: " + str(login_counter))
                 driver.quit()
                 if login_counter == 3:
@@ -86,8 +86,8 @@ if __name__ == "__main__":
             try:
                 storage.load_data()
             except:
-                 print("Unable to load data from database!")
-                 logger.error("Cannot load data from database")
+                print("Unable to load data from database!")
+                logger.error("Cannot load data from database")
         except Exception as e:
             print('The bot has run into an error! Resetting and retrying.\n Current Retry Count: ' + str(bot_reset_counter))
             print(e)
