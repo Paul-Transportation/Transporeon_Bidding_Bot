@@ -403,6 +403,7 @@ def check_lane_restrictions(load, base_rate):
     load['bid_recommended'] = True
     reasons = []
     locked_by_set = False
+    rule_matched = False
 
     for restriction in storage.lane_restrictions:
         # Normalize restriction fields for lane/shipper match
@@ -488,6 +489,8 @@ def check_lane_restrictions(load, base_rate):
         if not (pickup_ok and delivery_ok and spec_pick_ok and spec_del_ok and lead_ok and acc_ok and equip_ok and weight_ok and distance_range_ok and lane_count_ok):
             continue  # this rule doesn't apply beyond lane
 
+        rule_matched = True
+
         # If rule is "no bid", stop immediately
         if restriction.get('no_bid'):
             load['bid_failure_reason'] = f"Rule {restriction['rule_id']}: NO BID (matched lane & conditions)"
@@ -549,12 +552,11 @@ def check_lane_restrictions(load, base_rate):
                 load['reason'] = " | ".join(reasons)
                 return False, amount
 
-    # load['reason'] = " | ".join(reasons) if reasons else "No rule matched; base rate"
-    # return True, amount
-    if not reasons:
-        load['bid_failure_reason'] = "No rule matched; rejecting load"
+    # No rule matched at all — always reject; never bid at a bare DAT rate
+    if not rule_matched:
+        load['bid_failure_reason'] = "No rule matched; no bid"
         load['bid_recommended'] = False
         return False, 0
 
-    load['reason'] = " | ".join(reasons)
+    load['reason'] = " | ".join(reasons) if reasons else "No adjustments applied"
     return True, amount
