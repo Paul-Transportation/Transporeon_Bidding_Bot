@@ -1,6 +1,6 @@
 {
   "on": 1,
-  "bidding": 0,
+  "bidding": 1,
   "schedule": {
     "enabled": true,
     "timezone": "America/Chicago",
