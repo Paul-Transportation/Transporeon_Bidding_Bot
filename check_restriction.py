@@ -549,5 +549,12 @@ def check_lane_restrictons(load, base_rate):
                 load['reason'] = " | ".join(reasons)
                 return False, amount
 
-    load['reason'] = " | ".join(reasons) if reasons else "No rule matched; base rate"
+    # load['reason'] = " | ".join(reasons) if reasons else "No rule matched; base rate"
+    # return True, amount
+    if not reasons:
+        load['bid_failure_reason'] = "No rule matched; rejecting load"
+        load['bid_recommended'] = False
+        return False, 0
+
+    load['reason'] = " | ".join(reasons)
     return True, amount
