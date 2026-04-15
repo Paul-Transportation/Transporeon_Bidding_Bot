@@ -8,6 +8,5 @@
     "start": "07:00",
     "end": "18:00"
   },
-  "prometheus_port": 8000,
-  "totp_secret": ""
+  "prometheus_port": 8000
 }

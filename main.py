@@ -14,6 +14,8 @@ from Utilities.bot_functions import should_run_now
 import threading
 from server import start_api_server
 import time
+import os
+from dotenv import load_dotenv
 # from server import app
 
 # def run_flask_app():
@@ -26,6 +28,15 @@ def start_controller_thread():
 
 if __name__ == "__main__":
     """Main bot program runs here. First it will login and then run main bot"""
+    load_dotenv()
+    graph_2fa_config = {
+        "tenant_id":   os.getenv("GRAPH_TENANT_ID", ""),
+        "client_id":   os.getenv("GRAPH_CLIENT_ID", ""),
+        "pfx_path":    os.getenv("GRAPH_PFX_PATH", ""),
+        "pfx_password": os.getenv("GRAPH_PFX_PASSWORD", ""),
+        "mailbox":     os.getenv("GRAPH_MAILBOX", "Trenton.Sims@paulinc.com"),
+    }
+
     # Start Flask server in separate thread
     # flask_thread = threading.Thread(target=run_flask_app)
     # flask_thread.start()
@@ -68,7 +79,7 @@ if __name__ == "__main__":
         print("Available log types:", driver.log_types)
         try:
             print("logging in")
-            login(driver, user, password, website, totp_secret=storage.config.get("totp_secret", ""))
+            login(driver, user, password, website, graph_2fa_config=graph_2fa_config)
             login_counter = 0
         except Exception as e:
                 login_counter += 1
