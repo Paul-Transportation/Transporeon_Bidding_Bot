@@ -1,7 +1,7 @@
 """This module contains the main bot functionality"""
 from Utilities.utils import web_driver_wait_by_xpath, current_day_of_week, save_page_source, save_screenshot
 from Utilities.make_dat_call import make_dat_call
-from check_restriction import check_lane_restrictons
+from check_restriction import check_lane_restrictions
 from Utilities.email import send_linehaul_load_found_email, send_acception_email
 from Utilities.bot_functions import get_latest_network_call, navigate_to_bid_screen, refresh_page, get_total_loads, iteration_actions, get_load_information, handle_load_error, bid_load, reject_load, handle_evraz_condition, is_place_offer_disabled
 from Utilities.logger_config import logger
@@ -70,7 +70,7 @@ def _bot(driver):
             load['quote_id'] = dat_data['response']['transaction']
             base_rate += dat_data['response']['rateResponses'][0]['response']['rate']['averageFuelSurchargePerTripUsd']
             load['bid_failure_reason'] = ''
-            restrictions_check = check_lane_restrictons(load, base_rate)
+            restrictions_check = check_lane_restrictions(load, base_rate)
             print(restrictions_check)
             print(load['reason'])
             if restrictions_check[0]:

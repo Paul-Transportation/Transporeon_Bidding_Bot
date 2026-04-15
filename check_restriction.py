@@ -370,7 +370,7 @@ def _variable_adjustment_from_rule(restriction, base_rate):
     reason = f"{op_txt} {calc_desc}"
     return adj, reason, is_set
 
-def check_lane_restrictons(load, base_rate):
+def check_lane_restrictions(load, base_rate):
     """
     Runs through EVERY rule:
       * Adds the variable amounts for each matching rule (and per-extra-stop premium)
