@@ -40,7 +40,9 @@ class Storage:
             'password': 'Gravel$12Quasi',
             'host': 'AVRLDS01',
             'database': 'bidding',
-            'port': 3306
+            'port': 3306,
+            'charset': 'utf8mb4',
+            'collation': 'utf8mb4_general_ci'
         }
         retry_count = 0
         while retry_count < self.max_retry:

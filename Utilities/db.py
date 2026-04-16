@@ -12,7 +12,9 @@ def connect_to_DB():
     'password': 'B0tK1ng23',
     'host': 'paulsrv2', # or the IP address or hostname of your MariaDB server
     'database': 'paulbots',
-    'port': 3307 # default port for MariaDB, change if yours is different
+    'port': 3307, # default port for MariaDB, change if yours is different
+    'charset': 'utf8mb4',
+    'collation': 'utf8mb4_general_ci'
     }
     print("connected")
     return mysql.connector.connect(**config)
