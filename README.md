@@ -1,6 +1,6 @@
 # Transporeon Bidding Bot
 
-Automated bidding bot for the **Transporeon** load board. Monitors available freight, evaluates each load against configurable business rules, prices using DAT market rates, and submits bids via browser automation.
+Automated spot bidding bot for the **Transporeon** load board. Monitors available freight, evaluates each load against configurable business rules, prices using DAT market rates, and submits bids via browser automation.
 
 - **Server:** LG09
 - **Location:** `C:\Bots\Transporeon_Bidding_Bot`
