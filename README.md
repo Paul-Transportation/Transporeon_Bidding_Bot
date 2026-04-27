@@ -2,12 +2,14 @@
 
 Automated spot bidding bot for the **Transporeon** load board. Monitors available freight, evaluates each load against configurable business rules, prices using DAT market rates, and submits bids via browser automation.
 
-- **Server:** LG09
+- **Server:** LG09 (AWS WorkSpace, Windows)
 - **Location:** `C:\Bots\Transporeon_Bidding_Bot`
 - **Platform:** Transporeon (transporeon.com)
 - **Bid type:** All-in (single price including transport + fuel)
-- **Database:** AVRLDS01 → `bidding` database, user `bidding_user`
-- **Rules managed via:** [Bidding Rules Editor](../BiddingRulesEditor)
+- **Database:** `bidding` on **AVRLDS01:3306** (MariaDB 11.3, MySQL-protocol compatible), user `bidding_user`
+- **Rules managed via:** Centralized **Bidding Rules Editor** at **`http://AVRLDS01:8002`** (canonical instance — Flask, bare `python rules_backend.py`)
+- **Run model:** Manually launched via `.\deploy_script.ps1` after each deploy — **no Windows service, no Task Scheduler entry, no PM2** (Apr 2026 audit)
+- **2FA:** Email-based; codes read from Outlook via Microsoft Graph using certificate auth (see [Microsoft Graph 2FA](#microsoft-graph-2fa))
 - **Developer guide:** [knowledge-base/bot-guides/transporeon-bot.md](https://github.com/Paul-Transportation/paul-dev-docs/blob/main/knowledge-base/bot-guides/transporeon-bot.md)
 
 ---
@@ -156,9 +158,24 @@ Get-Process msedge, msedgedriver | Stop-Process -Force
 
 ## Rules Management
 
-Rules, variables, and shipper settings are managed via the **Bidding Rules Editor** web UI (port 8002 on LG01 / wherever the editor is deployed). After saving rules, the bot picks them up automatically via `GET /reload-rules`.
+Rules, variables, and shipper settings are managed via the **centralized Bidding Rules Editor** at **`http://AVRLDS01:8002`** (Flask, bare `python rules_backend.py`, install path `C:\Users\Trenton.Sims\Desktop\BiddingRulesEditor` on AVRLDS01). After saving rules, the bot picks them up automatically via `GET /reload-rules` on its control API.
 
-See the [Bidding Rules Editor repo](../BiddingRulesEditor) for details.
+See the [BiddingRulesEditor repo](../BiddingRulesEditor) for details. Per-bot copies of `rules_backend.py` inside this repo need reconciliation against the canonical deployment.
+
+---
+
+## Microsoft Graph 2FA
+
+Transporeon's login flow requires an email-based 2FA code on every session. The bot retrieves codes from Outlook automatically using the **Microsoft Graph API** with **certificate authentication** (no shared mailbox password):
+
+| Item | Value |
+| --- | --- |
+| Auth flow | Azure AD app registration → client-credentials grant via `.pfx` certificate |
+| Cert path on LG09 | `C:\Secure\PaulGraphMailReader.pfx` (filename as deployed 2026-04-16) |
+| Mailbox | The mailbox the bot polls for 2FA codes |
+| App registration | Display name and owner unconfirmed — tracked in `paul-dev-docs/knowledge-base/open-items.md` |
+
+> **Cert rotation:** When the `.pfx` is rotated, update both the file at `C:\Secure\PaulGraphMailReader.pfx` and the Azure AD app registration's certificate.
 
 ---
 
