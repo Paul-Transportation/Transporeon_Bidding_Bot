@@ -1,4 +1,4 @@
-"""This is the defintion of the Storage class, which is responsible for: Saving data, recieving data, and managing the database connection"""
+"""This is the definition of the Storage class, which is responsible for: Saving data, receiving data, and managing the database connection"""
 import mysql.connector
 import time
 from prometheus_client import Gauge
@@ -11,9 +11,9 @@ class Storage:
     def __init__(self, config):
         # self._is_connected = False
         self.SQL_connection_state = Gauge(
-                 "SQL_connection_state",
-                 "This shows whether or not the bot is connected to SQL currently",
-             )
+            "SQL_connection_state",
+            "This shows whether or not the bot is connected to SQL currently",
+        )
         self.should_grab_loads = Gauge(
             "should_grab_loads",
             "This tells the bot whether or not it should be grabbing loads"
@@ -143,7 +143,7 @@ class Storage:
             "LEFT OUTER JOIN pli_loadboard_accounts l ON s.loadboard_id = l.loadboard_id "
             "LEFT OUTER JOIN pli_loadboards lb ON l.loadboard_id = lb.id "
             "LEFT OUTER JOIN pli_bidding_variables v ON v.id = r.variable_id "
-            f"WHERE (lb.loadboard_name = '{self.load_board}' AND r.is_active = 1) "
+            f"WHERE ((lb.loadboard_name = '{self.load_board}' OR lb.loadboard_name = 'Global') AND r.is_active = 1) "
             # allow either no variable, or an active variable
             "AND (r.variable_id IS NULL OR v.is_active = 1) "
             "ORDER BY s.id, r.origin_city, r.origin_state, r.dest_city, r.dest_state;"
@@ -305,7 +305,7 @@ class Storage:
             if "Duplicate entry" in str(e):
                 print("Duplicate load in database")
             else:
-                logger.error(f"The following error occured when trying to save load to MSSQL: {e}", exc_info=True)
+                logger.error(f"The following error occurred when trying to save load to MSSQL: {e}", exc_info=True)
                 print('Send to SQL Failure: ', e.args)
 
 def get_load_count(self):
