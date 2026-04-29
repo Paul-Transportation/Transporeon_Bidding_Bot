@@ -8,6 +8,38 @@ import re
 import traceback
 
 
+# DOT Week 2026 in-transit surge. Confirmed with Becca 2026-04-29.
+# In-transit: pickup_date <= target <= delivery_date (both inclusive).
+# When a load straddles multiple target dates, the largest single-day surge wins.
+DOT_WEEK_2026_SURGES = [
+    (date(2026, 5, 11), 400.0),
+    (date(2026, 5, 12), 600.0),
+    (date(2026, 5, 13), 600.0),
+    (date(2026, 5, 14), 600.0),
+    (date(2026, 5, 15), 600.0),
+]
+
+
+def _apply_dot_week_2026_surge(load, amount, reasons):
+    """Apply DOT Week 2026 in-transit surge to ``amount``. See DOT_WEEK_2026_SURGES."""
+    pickup_dt = normalize_dt(load.get('pickup_date'))
+    delivery_dt = normalize_dt(load.get('delivery_date'))
+    if not pickup_dt or not delivery_dt:
+        return amount
+    pickup_d = pickup_dt.date()
+    delivery_d = delivery_dt.date()
+    max_surge = 0.0
+    hit_dates = []
+    for target, surge in DOT_WEEK_2026_SURGES:
+        if pickup_d <= target <= delivery_d:
+            hit_dates.append(target.isoformat())
+            if surge > max_surge:
+                max_surge = surge
+    if max_surge > 0:
+        amount += max_surge
+        reasons.append(f"DOT Week 2026 in-transit surge: +${max_surge:.2f} (in transit on {', '.join(hit_dates)})")
+    return amount
+
 
 def get_lead_time_code(pickup_str):
     """
@@ -524,6 +556,12 @@ def check_lane_restrictions(load, base_rate):
                 f"Rule {restriction['rule_id']}: multistop premium +${float(restriction.get('per_extra_stop_usd')):.2f}/extra "
                 f"(stops={stops_count}, threshold={restriction.get('min_stops_threshold')})"
             )
+
+    # DOT Week 2026 in-transit surge (additive). Applied before locked_by_set
+    # short-circuit so SET-locked rules still get the surge. Skipped when no
+    # rule matched; the no-rule branch later returns False, 0 regardless.
+    if rule_matched:
+        amount = _apply_dot_week_2026_surge(load, amount, reasons)
 
     # If locked by SET, skip fuel adjustments and shipper rounding/min/max.
     if locked_by_set:
