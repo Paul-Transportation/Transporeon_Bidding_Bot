@@ -3,6 +3,7 @@
         "accessorials",
         "allin",
         "AVRLDS",
+        "BOONEVILLE",
         "CURDATE",
         "linehaul",
         "loadboard",
@@ -13,6 +14,7 @@
         "paulinc",
         "totp",
         "Transporeon",
-        "ujson"
+        "ujson",
+        "YDAY"
     ]
 }

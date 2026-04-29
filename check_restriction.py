@@ -415,7 +415,7 @@ def check_lane_restrictions(load, base_rate):
 
         # ---- Lane+shipper match (required) ----
         if not (
-            restriction['shipper_name'] == shipper_name and
+            (restriction['shipper_name'] is None or restriction['shipper_name'] == 'GLOBAL' or restriction['shipper_name'] == shipper_name) and
             (restriction['origin_state'] == origin_state or restriction['origin_state'] == '*') and
             (origin_city == restriction['origin_city'] or restriction['origin_city'] == '*') and
             (origin_country == restriction['origin_country'] or restriction['origin_country'] == '*') and
@@ -433,7 +433,7 @@ def check_lane_restrictions(load, base_rate):
 
         # ---- Extra condition checks (all must pass) ----
         distance_range_ok = True
-        if restriction.get('distance_low') and restriction.get('distance_high'):
+        if restriction.get('distance_low') is not None and restriction.get('distance_high') is not None:
             if load['est_distance'] >= restriction.get('distance_low') and load['est_distance'] <= restriction.get('distance_high'):
                 distance_range_ok = True
             else:
